@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClawdBot</title>
+    <meta name="description" content="ClawdBot — home on the web." />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="canonical" href="https://clawdbot.com/" />
+    <style>
+      :root {
+        --bg0: #05060a;
+        --bg1: #0a0c14;
+        --fg0: #f2f4ff;
+        --fg1: #b8bdd8;
+        --accent: #8cf2ff;
+        --accent2: #d2a8ff;
+        --border: rgba(242, 244, 255, 0.12);
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+        color: var(--fg0);
+        background:
+          radial-gradient(1200px 700px at 18% 18%, rgba(140, 242, 255, 0.22), transparent 55%),
+          radial-gradient(900px 600px at 78% 28%, rgba(210, 168, 255, 0.18), transparent 58%),
+          radial-gradient(1000px 800px at 45% 90%, rgba(140, 242, 255, 0.10), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+      }
+      .wrap {
+        max-width: 920px;
+        padding: 72px 24px;
+        margin: 0 auto;
+      }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(8, 10, 16, 0.62);
+        backdrop-filter: blur(18px);
+        box-shadow:
+          0 30px 90px rgba(0, 0, 0, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        padding: 28px;
+      }
+      h1 {
+        font-size: 44px;
+        letter-spacing: -0.03em;
+        margin: 0 0 10px 0;
+        line-height: 1.06;
+      }
+      .sub {
+        color: var(--fg1);
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0 0 22px 0;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      a.btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        color: var(--fg0);
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.04);
+        transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+      }
+      a.btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(140, 242, 255, 0.35);
+        background: rgba(140, 242, 255, 0.08);
+      }
+      .sig {
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: rgba(242, 244, 255, 0.65);
+        font-size: 12px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        box-shadow: 0 0 0 4px rgba(140, 242, 255, 0.10);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>ClawdBot</h1>
+        <p class="sub">New canonical domain. More soon.</p>
+        <div class="links">
+          <a class="btn" href="https://clawd.me/">clawd.me</a>
+          <a class="btn" href="https://clawdis.ai/">clawdis.ai</a>
+          <a class="btn" href="https://github.com/steipete">GitHub</a>
+        </div>
+        <div class="sig"><span class="dot"></span><span>Hosted on GitHub Pages.</span></div>
+      </div>
+    </div>
+  </body>
+</html>
