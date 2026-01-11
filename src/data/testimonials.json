@@ -5,6 +5,26 @@
     "url": "https://x.com/KrauseFx/status/2008531076487246176"
   },
   {
+    "quote": "Excellent reading thank you. Love oracle and Clawd.",
+    "author": "karpathy",
+    "url": "https://x.com/karpathy/status/2005692186470514904"
+  },
+  {
+    "quote": "Not enterprise. Not hosted. Infrastructure you control. This is what personal AI should feel like.",
+    "author": "BioInfo",
+    "url": "https://x.com/BioInfo/status/2010115166315393370"
+  },
+  {
+    "quote": "A megacorp like Anthropic or OpenAI could not build this. Literally impossible with how corpo works.",
+    "author": "Dimillian",
+    "url": "https://x.com/Dimillian/status/2008446638172340398"
+  },
+  {
+    "quote": "Most fun experience in days. Haven't slept much but oh boy is my life getting automated.",
+    "author": "thekitze",
+    "url": "https://x.com/thekitze/status/2007903543022563471"
+  },
+  {
     "quote": "Rebuilt my entire site via Telegram while watching Netflix in bed. Notion → Astro, 18 posts migrated, DNS moved to Cloudflare. Never opened my laptop.",
     "author": "davekiss",
     "url": "https://x.com/davekiss/status/2008994096736817624"
@@ -25,14 +45,19 @@
     "url": "https://x.com/crossiBuilds/status/2008478023826153665"
   },
   {
-    "quote": "Remember when Siri was supposed to be the future? That future exists now - it's just not from Apple or Google. Self-hosted AI that actually remembers things, messages proactively, runs 24/7 on a $5/month server.",
-    "author": "velvet_shark",
-    "url": "https://x.com/velvet_shark/status/2009716334813434019"
+    "quote": "I'm literally building a whole website on a Nokia 3310 by calling @clawdbot right now.",
+    "author": "youbiak",
+    "url": "https://x.com/youbiak/status/2010097771735585016"
   },
   {
-    "quote": "A megacorp like Anthropic or OpenAI could not build this. Literally impossible with how corpo works.",
-    "author": "Dimillian",
-    "url": "https://x.com/Dimillian/status/2008446638172340398"
+    "quote": "Damn I went out and bought a mac mini just to try Clawdbot. Incredibly addicting.",
+    "author": "signalgaining",
+    "url": "https://x.com/signalgaining/status/2010142581762732449"
+  },
+  {
+    "quote": "@clawdbot is the personal assistant Claude and ChatGPT dream to be.",
+    "author": "aus_bytes",
+    "url": "https://x.com/aus_bytes/status/2010125204463464525"
   },
   {
     "quote": "Cleared 10,000+ emails from my inbox (45% reduction!)",
@@ -45,14 +70,9 @@
     "url": "https://x.com/avi_press/status/2009070459065913806"
   },
   {
-    "quote": "Completely hooked. Integrated emails, home assistant, homelab via SSH, todo list, Apple Notes, shopping list. All via a single Telegram chat.",
-    "author": "acevail_",
-    "url": "https://x.com/acevail_/status/2008203784317714847"
-  },
-  {
-    "quote": "Named him Jarvis. Daily briefings, calendar checks, reminds me when to leave for pickleball based on traffic.",
-    "author": "BraydonCoyer",
-    "url": "https://x.com/BraydonCoyer/status/2008537198061379720"
+    "quote": "@clawdbot has done my taxes. @steipete really cooked here.",
+    "author": "sharoni_k",
+    "url": "https://x.com/sharoni_k/status/2009016634619707501"
   },
   {
     "quote": "Autonomous Claude Code loops from my phone. 'fix tests' via Telegram. Runs the loop, sends progress every 5 iterations.",
@@ -70,9 +90,29 @@
     "url": "https://x.com/hey_zilla/status/2008094368683704599"
   },
   {
-    "quote": "@clawdbot has done my taxes. @steipete really cooked here.",
-    "author": "sharoni_k",
-    "url": "https://x.com/sharoni_k/status/2009016634619707501"
+    "quote": "Processed our entire source of truth via WhatsApp in minutes, where RAG agents struggled for days.",
+    "author": "pocarles",
+    "url": "https://x.com/pocarles/status/2007925850562531676"
+  },
+  {
+    "quote": "Wanted a way for it to have access to my courses/assignments at uni. Asked it to build a skill - it did and started using it on its own.",
+    "author": "pranavkarthik__",
+    "url": "https://x.com/pranavkarthik__/status/2009835051522162874"
+  },
+  {
+    "quote": "I now have @clawdbot independently assessing how it can help me in the background. It wrote a doc connecting two completely unrelated conversations from different comms channels.",
+    "author": "bffmike",
+    "url": "https://x.com/bffmike/status/2010083520958415287"
+  },
+  {
+    "quote": "Completely hooked. Integrated emails, home assistant, homelab via SSH, todo list, Apple Notes, shopping list. All via a single Telegram chat.",
+    "author": "acevail_",
+    "url": "https://x.com/acevail_/status/2008203784317714847"
+  },
+  {
+    "quote": "Named him Jarvis. Daily briefings, calendar checks, reminds me when to leave for pickleball based on traffic.",
+    "author": "BraydonCoyer",
+    "url": "https://x.com/BraydonCoyer/status/2008537198061379720"
   },
   {
     "quote": "Now my home's PM. Wife and I drop topics anytime, Clawd researches, Sunday 9am sends the roundup.",
@@ -90,54 +130,9 @@
     "url": "https://x.com/LLMJunky/status/2010045556501164366"
   },
   {
-    "quote": "Within an hour, had it monitoring my full release workflow—gh actions, npm publish—alerting me when done!",
-    "author": "shuv1337",
-    "url": "https://x.com/shuv1337/status/2008118863205113899"
-  },
-  {
-    "quote": "Processed our entire source of truth via WhatsApp in minutes, where RAG agents struggled for days.",
-    "author": "pocarles",
-    "url": "https://x.com/pocarles/status/2007925850562531676"
-  },
-  {
-    "quote": "Wanted a way for it to have access to my courses/assignments at uni. Asked it to build a skill - it did and started using it on its own.",
-    "author": "pranavkarthik__",
-    "url": "https://x.com/pranavkarthik__/status/2009835051522162874"
-  },
-  {
-    "quote": "Knew my voice, my weird abbreviations, my 2am panic debugging sessions. Made me feel like a real developer.",
-    "author": "xMikeMickelson",
-    "url": "https://x.com/xMikeMickelson/status/2009511137537126548"
-  },
-  {
-    "quote": "Most fun experience in days. Haven't slept much but oh boy is my life getting automated.",
-    "author": "thekitze",
-    "url": "https://x.com/thekitze/status/2007903543022563471"
-  },
-  {
-    "quote": "Too lazy to search. Asked @clawdbot to search emails for me, he goes through email, finds pdf, gives me numbers. Good bot.",
-    "author": "jjpcodes",
-    "url": "https://x.com/jjpcodes/status/2010026119446310928"
-  },
-  {
-    "quote": "@clawdbot is absolute game changer for me. The amount of things I done from my phone just during my breakfast is absolutely breathtaking.",
-    "author": "SedRicKCZ",
-    "url": "https://x.com/SedRicKCZ/status/2008797603534946372"
-  },
-  {
-    "quote": "Clawdbot > anything GPT will ever release. Most fun I've had building in my entire life.",
-    "author": "Giebz",
-    "url": "https://x.com/Giebz/status/2009354385349095672"
-  },
-  {
     "quote": "A glimpse into the future of how normal people will use AI.",
     "author": "tysonhutchins_",
     "url": "https://x.com/tysonhutchins_/status/2010046933893865701"
-  },
-  {
-    "quote": "Feels like the best buddy you always wanted. For me this is 'alpha AGI'.",
-    "author": "OliNorwell",
-    "url": "https://x.com/OliNorwell/status/2009205888482210149"
   },
   {
     "quote": "LOVE that it can edit its own system prompt and skills on the fly then hot-reload them.",
@@ -145,13 +140,13 @@
     "url": "https://x.com/hey_zilla/status/2007956793255985625"
   },
   {
-    "quote": "This mf called @steipete has achieved AGI with @clawdbot",
-    "author": "rmedranollamas",
-    "url": "https://x.com/rmedranollamas/status/2008649596474716515"
+    "quote": "Clawdbot > anything GPT will ever release. Most fun I've had building in my entire life.",
+    "author": "Giebz",
+    "url": "https://x.com/Giebz/status/2009354385349095672"
   },
   {
-    "quote": "Excellent reading thank you. Love oracle and Clawd.",
-    "author": "karpathy",
-    "url": "https://x.com/karpathy/status/2005692186470514904"
+    "quote": "@clawdbot is absolute game changer for me. The amount of things I done from my phone just during my breakfast is absolutely breathtaking.",
+    "author": "SedRicKCZ",
+    "url": "https://x.com/SedRicKCZ/status/2008797603534946372"
   }
 ]
