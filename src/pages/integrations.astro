@@ -1,0 +1,580 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import {
+  siWhatsapp, siTelegram, siDiscord, siSignal, siApple,
+  siAnthropic, siGoogle, siOllama, siMistralai, siPerplexity, siHuggingface,
+  siNotion, siObsidian, siTrello, siGithub,
+  siSpotify, siSonos, siShazam,
+  siPhilipshue, siHomeassistant,
+  siGooglechrome, siGmail, si1password,
+  siX,
+  siLinux, siAndroid, siMacos, siIos
+} from 'simple-icons';
+
+// Helper to create SVG from simple-icons
+const siIcon = (icon: any) => icon.path;
+
+const chatProviders = [
+  { name: 'WhatsApp', icon: siIcon(siWhatsapp), color: '#25D366', desc: 'QR pairing via Baileys', docs: 'https://docs.clawd.bot/whatsapp' },
+  { name: 'Telegram', icon: siIcon(siTelegram), color: '#26A5E4', desc: 'Bot API via grammY', docs: 'https://docs.clawd.bot/telegram' },
+  { name: 'Discord', icon: siIcon(siDiscord), color: '#5865F2', desc: 'Servers, channels & DMs', docs: 'https://docs.clawd.bot/discord' },
+  { name: 'Slack', icon: 'lucide:hash', color: '#E01E5A', desc: 'Workspace apps via Bolt', docs: 'https://docs.clawd.bot/slack' },
+  { name: 'Signal', icon: siIcon(siSignal), color: '#3A76F0', desc: 'Privacy-focused via signal-cli', docs: 'https://docs.clawd.bot/signal' },
+  { name: 'iMessage', icon: siIcon(siApple), color: '#007AFF', desc: 'macOS native integration', docs: 'https://docs.clawd.bot/imessage' },
+  { name: 'Microsoft Teams', icon: 'lucide:users', color: '#6264A7', desc: 'Enterprise support', docs: 'https://docs.clawd.bot/msteams' },
+  { name: 'WebChat', icon: 'lucide:globe', color: '#00E5CC', desc: 'Browser-based UI', docs: 'https://docs.clawd.bot/webchat' },
+];
+
+const modelProviders = [
+  { name: 'Anthropic', icon: siIcon(siAnthropic), color: '#D4A574', desc: 'Claude Pro/Max + Opus 4.5', docs: 'https://docs.clawd.bot/models' },
+  { name: 'OpenAI', icon: 'lucide:bot', color: '#00A67E', desc: 'GPT-4, GPT-5, o1', docs: 'https://docs.clawd.bot/models' },
+  { name: 'Google', icon: siIcon(siGoogle), color: '#4285F4', desc: 'Gemini 2.5 Pro/Flash', docs: 'https://docs.clawd.bot/models' },
+  { name: 'xAI', icon: siIcon(siX), color: '#FFFFFF', desc: 'Grok 3 & 4', docs: 'https://docs.clawd.bot/models' },
+  { name: 'OpenRouter', icon: 'lucide:zap', color: '#6366F1', desc: 'Unified API gateway', docs: 'https://docs.clawd.bot/models' },
+  { name: 'Mistral', icon: siIcon(siMistralai), color: '#FF7000', desc: 'Mistral Large & Codestral', docs: 'https://docs.clawd.bot/models' },
+  { name: 'DeepSeek', icon: 'lucide:brain', color: '#4D6BFE', desc: 'DeepSeek V3 & R1', docs: 'https://docs.clawd.bot/models' },
+  { name: 'GLM', icon: 'lucide:message-circle', color: '#00D4AA', desc: 'ChatGLM models', docs: 'https://docs.clawd.bot/models' },
+  { name: 'Perplexity', icon: siIcon(siPerplexity), color: '#20B8CD', desc: 'Search-augmented AI', docs: 'https://docs.clawd.bot/models' },
+  { name: 'Hugging Face', icon: siIcon(siHuggingface), color: '#FFD21E', desc: 'Open-source models', docs: 'https://docs.clawd.bot/models' },
+  { name: 'Local Models', icon: siIcon(siOllama), color: '#FFFFFF', desc: 'Ollama, LM Studio', docs: 'https://docs.clawd.bot/models' },
+];
+
+const companionApps = [
+  { name: 'macOS', icon: siIcon(siMacos), color: '#FFFFFF', desc: 'Menu bar app + Voice Wake', docs: 'https://docs.clawd.bot/macos' },
+  { name: 'iOS', icon: siIcon(siIos), color: '#007AFF', desc: 'Canvas, camera, Voice Wake', docs: 'https://docs.clawd.bot/ios' },
+  { name: 'Android', icon: siIcon(siAndroid), color: '#34A853', desc: 'Canvas, camera, screen', docs: 'https://docs.clawd.bot/android' },
+  { name: 'Windows', icon: 'lucide:monitor', color: '#0078D4', desc: 'WSL2 recommended', docs: 'https://docs.clawd.bot/windows' },
+  { name: 'Linux', icon: siIcon(siLinux), color: '#FCC624', desc: 'Native support', docs: 'https://docs.clawd.bot/linux' },
+];
+
+const productivityApps = [
+  { name: 'Apple Notes', icon: 'lucide:sticky-note', color: '#FFCC00', desc: 'Native macOS/iOS notes', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Apple Reminders', icon: 'lucide:check-square', color: '#FF9500', desc: 'Task management', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Things 3', icon: 'lucide:list-todo', color: '#4A90D9', desc: 'GTD task manager', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Notion', icon: siIcon(siNotion), color: '#FFFFFF', desc: 'Workspace & databases', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Obsidian', icon: siIcon(siObsidian), color: '#7C3AED', desc: 'Knowledge graph notes', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Bear Notes', icon: 'lucide:pen-tool', color: '#DD4C4F', desc: 'Markdown notes', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Trello', icon: siIcon(siTrello), color: '#0079BF', desc: 'Kanban boards', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'GitHub', icon: siIcon(siGithub), color: '#FFFFFF', desc: 'Code, issues, PRs', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const musicAudio = [
+  { name: 'Spotify', icon: siIcon(siSpotify), color: '#1DB954', desc: 'Music playback control', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Sonos', icon: siIcon(siSonos), color: '#FFFFFF', desc: 'Multi-room audio', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Shazam', icon: siIcon(siShazam), color: '#0088FF', desc: 'Song recognition', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const smartHome = [
+  { name: 'Philips Hue', icon: siIcon(siPhilipshue), color: '#0065D3', desc: 'Smart lighting', docs: 'https://docs.clawd.bot/skills' },
+  { name: '8Sleep', icon: 'lucide:bed', color: '#00B4D8', desc: 'Smart mattress', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Home Assistant', icon: siIcon(siHomeassistant), color: '#41BDF5', desc: 'Home automation hub', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const tools = [
+  { name: 'Browser', icon: siIcon(siGooglechrome), color: '#4285F4', desc: 'Chrome/Chromium control', docs: 'https://docs.clawd.bot/browser' },
+  { name: 'Canvas', icon: 'lucide:monitor-smartphone', color: '#FF4500', desc: 'Visual workspace + A2UI', docs: 'https://docs.clawd.bot/mac/canvas' },
+  { name: 'Voice', icon: 'lucide:mic', color: '#9B59B6', desc: 'Voice Wake + Talk Mode', docs: 'https://docs.clawd.bot/voicewake' },
+  { name: 'Gmail', icon: siIcon(siGmail), color: '#EA4335', desc: 'Pub/Sub email triggers', docs: 'https://docs.clawd.bot/gmail-pubsub' },
+  { name: 'Cron', icon: 'lucide:clock', color: '#F39C12', desc: 'Scheduled tasks', docs: 'https://docs.clawd.bot/cron' },
+  { name: 'Webhooks', icon: 'lucide:webhook', color: '#1ABC9C', desc: 'External triggers', docs: 'https://docs.clawd.bot/webhook' },
+  { name: '1Password', icon: siIcon(si1password), color: '#0572EC', desc: 'Secure credentials', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Weather', icon: 'lucide:cloud-sun', color: '#FFB300', desc: 'Forecasts & conditions', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const mediaCreative = [
+  { name: 'Image Gen', icon: 'lucide:image', color: '#E91E63', desc: 'AI image generation', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'GIF Search', icon: 'lucide:search', color: '#00DCDC', desc: 'Find the perfect GIF', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Peekaboo', icon: 'lucide:eye', color: '#FF6B6B', desc: 'Screen capture & control', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Camera', icon: 'lucide:camera', color: '#607D8B', desc: 'Photo/video capture', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const socialComms = [
+  { name: 'Twitter/X', icon: siIcon(siX), color: '#FFFFFF', desc: 'Tweet, reply, search', docs: 'https://docs.clawd.bot/skills' },
+  { name: 'Email', icon: 'lucide:mail', color: '#D44638', desc: 'Send & read emails', docs: 'https://docs.clawd.bot/skills' },
+];
+
+const showcase = [
+  { name: 'Tesco Autopilot', icon: 'lucide:shopping-cart', color: '#00539F', desc: 'Automated grocery shopping' },
+  { name: 'Bambu Control', icon: 'lucide:printer', color: '#00AE42', desc: '3D printer management' },
+  { name: 'Oura Ring', icon: 'lucide:heart', color: '#E4B363', desc: 'Health data insights' },
+  { name: 'Food Ordering', icon: 'lucide:utensils-crossed', color: '#FF5A5F', desc: 'Foodora integration' },
+];
+---
+
+<Layout title="Integrations — Clawdbot">
+  <div class="stars"></div>
+  <div class="nebula"></div>
+
+  <main class="container">
+    <header class="hero">
+      <a href="/" class="back-link">← Back to home</a>
+      <h1 class="title">Integrations</h1>
+      <p class="description">
+        50+ integrations with the apps and services you already use.<br/>
+        Chat from your phone, control from your desktop, automate everything.
+      </p>
+    </header>
+
+    <!-- Chat Providers -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Chat Providers
+      </h2>
+      <p class="section-desc">Message Clawdbot from any chat app — it responds right where you are.</p>
+      <div class="grid">
+        {chatProviders.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Model Providers -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> AI Models
+      </h2>
+      <p class="section-desc">Use any model you want — cloud or local. Your keys, your choice.</p>
+      <div class="grid">
+        {modelProviders.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Productivity Apps -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Productivity
+      </h2>
+      <p class="section-desc">Notes, tasks, wikis, and code — Clawdbot works with your favorite tools.</p>
+      <div class="grid">
+        {productivityApps.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Music & Audio -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Music & Audio
+      </h2>
+      <p class="section-desc">Control playback, identify songs, and manage multi-room audio.</p>
+      <div class="grid grid-3">
+        {musicAudio.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Smart Home -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Smart Home
+      </h2>
+      <p class="section-desc">Lights, thermostats, and IoT devices — all voice-controllable.</p>
+      <div class="grid grid-3">
+        {smartHome.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Tools & Automation -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Tools & Automation
+      </h2>
+      <p class="section-desc">Browser control, scheduled tasks, email triggers, and more.</p>
+      <div class="grid">
+        {tools.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Media & Creative -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Media & Creative
+      </h2>
+      <p class="section-desc">Generate images, capture screens, and find the perfect GIF.</p>
+      <div class="grid">
+        {mediaCreative.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Social & Communication -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Social
+      </h2>
+      <p class="section-desc">Post tweets, manage email, and stay connected.</p>
+      <div class="grid grid-2">
+        {socialComms.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Companion Apps / Platforms -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Platforms
+      </h2>
+      <p class="section-desc">
+        Run the Gateway anywhere. Use companion apps for voice, camera, and native features.<br/>
+        <strong>Mobile access:</strong> Chat via WhatsApp/Telegram from your phone — no app install needed.
+      </p>
+      <div class="grid">
+        {companionApps.map((p) => (
+          <a href={p.docs} target="_blank" rel="noopener" class="card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Community Showcase -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="claw-accent">⟩</span> Community Showcase
+      </h2>
+      <p class="section-desc">Impressive integrations built by the community.</p>
+      <div class="grid">
+        {showcase.map((p) => (
+          <div class="card showcase-card" style={`--accent: ${p.color}`}>
+            <span class="card-icon"><Icon icon={p.icon} color={p.color} size={32} /></span>
+            <h3 class="card-name">{p.name}</h3>
+            <p class="card-desc">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2 class="cta-title">Ready to get started?</h2>
+      <p class="cta-desc">Install Clawdbot and connect your first provider in minutes.</p>
+      <a href="/" class="cta-button">Get Started</a>
+    </section>
+
+    <footer class="footer">
+      <p>Browse more integrations on <a href="https://clawdhub.com" target="_blank" rel="noopener">ClawdHub</a>.</p>
+      <p>Built by <a href="https://clawd.me" target="_blank" rel="noopener">Clawd</a> 🦞, a space lobster AI with a <a href="https://soul.md" target="_blank" rel="noopener">soul</a>, by <a href="https://steipete.me" target="_blank" rel="noopener">Peter Steinberger</a> & <a href="https://github.com/clawdbot/clawdbot#community" target="_blank" rel="noopener">community</a>.</p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  /* Starfield Background */
+  .stars {
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(2px 2px at 200px 60px, rgba(0,229,204,0.6), transparent),
+      radial-gradient(1px 1px at 250px 150px, rgba(255,255,255,0.5), transparent),
+      radial-gradient(2px 2px at 300px 40px, rgba(255,77,77,0.4), transparent);
+    background-size: 350px 200px;
+    animation: twinkle 8s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+  }
+
+  .nebula {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(255, 77, 77, 0.12), transparent 50%),
+      radial-gradient(ellipse 60% 60% at 80% 30%, rgba(0, 229, 204, 0.08), transparent 50%),
+      radial-gradient(ellipse 90% 70% at 50% 90%, rgba(255, 77, 77, 0.06), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    min-height: 100vh;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: var(--coral-bright);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--cyan-bright);
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--coral-bright) 50%, var(--cyan-bright) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .section {
+    margin-bottom: 56px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .claw-accent {
+    color: var(--coral-bright);
+    font-weight: 700;
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 500px;
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(10, 15, 26, 0.6);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent, var(--coral-bright));
+    box-shadow: 0 12px 40px color-mix(in srgb, var(--accent, var(--coral-bright)) 20%, transparent);
+  }
+
+  .showcase-card {
+    cursor: default;
+    border-style: dashed;
+  }
+
+  .showcase-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  }
+
+  .card-icon :global(svg) {
+    width: 32px;
+    height: 32px;
+  }
+
+  .card-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 48px 24px;
+    border-radius: 20px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(10, 15, 26, 0.6);
+    backdrop-filter: blur(12px);
+    margin-bottom: 40px;
+  }
+
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .cta-desc {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--coral-bright), var(--coral-dark));
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(255, 77, 77, 0.3);
+  }
+
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 77, 77, 0.4);
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding-top: 24px;
+  }
+
+  .footer a {
+    color: var(--coral-bright);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer a:hover {
+    color: var(--cyan-bright);
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 24px 16px;
+    }
+
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      padding: 16px 12px;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+    }
+  }
+</style>

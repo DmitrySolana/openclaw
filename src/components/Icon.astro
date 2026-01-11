@@ -1,0 +1,70 @@
+---
+// Icon component that renders either a Simple Icons SVG path or a Lucide icon name
+interface Props {
+  icon: string;
+  color?: string;
+  size?: number;
+  class?: string;
+}
+
+import {
+  Globe, Mic, Clock, Webhook, CloudSun, Image, Camera, Search, Mail,
+  StickyNote, CheckSquare, ListTodo, PenTool, Bed, ShoppingCart, Printer,
+  Heart, UtensilsCrossed, MonitorSmartphone, Eye, Monitor, Bot, Users, Hash,
+  Home, MessageCircle, Brain, Terminal, Puzzle, Zap
+} from 'lucide-astro';
+
+const { icon, color = 'currentColor', size = 24, class: className = '' } = Astro.props;
+
+// Map lucide icon names to components
+const lucideIcons: Record<string, any> = {
+  'lucide:globe': Globe,
+  'lucide:mic': Mic,
+  'lucide:clock': Clock,
+  'lucide:webhook': Webhook,
+  'lucide:cloud-sun': CloudSun,
+  'lucide:image': Image,
+  'lucide:camera': Camera,
+  'lucide:search': Search,
+  'lucide:mail': Mail,
+  'lucide:sticky-note': StickyNote,
+  'lucide:check-square': CheckSquare,
+  'lucide:list-todo': ListTodo,
+  'lucide:pen-tool': PenTool,
+  'lucide:bed': Bed,
+  'lucide:shopping-cart': ShoppingCart,
+  'lucide:printer': Printer,
+  'lucide:heart': Heart,
+  'lucide:utensils-crossed': UtensilsCrossed,
+  'lucide:monitor-smartphone': MonitorSmartphone,
+  'lucide:eye': Eye,
+  'lucide:monitor': Monitor,
+  'lucide:bot': Bot,
+  'lucide:users': Users,
+  'lucide:hash': Hash,
+  'lucide:home': Home,
+  'lucide:message-circle': MessageCircle,
+  'lucide:brain': Brain,
+  'lucide:terminal': Terminal,
+  'lucide:puzzle': Puzzle,
+  'lucide:zap': Zap,
+};
+
+const isLucide = icon.startsWith('lucide:');
+const LucideComponent = isLucide ? lucideIcons[icon] : null;
+---
+
+{isLucide && LucideComponent ? (
+  <LucideComponent size={size} color={color} class={className} />
+) : (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill={color}
+    class={className}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d={icon} />
+  </svg>
+)}
