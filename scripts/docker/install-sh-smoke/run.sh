@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_URL="${CLAWDBOT_INSTALL_URL:-https://clawd.bot/install.sh}"
+LOCAL_INSTALL_PATH="/opt/clawdbot-install.sh"
+if [[ -n "${CLAWDBOT_INSTALL_URL:-}" ]]; then
+  INSTALL_URL="$CLAWDBOT_INSTALL_URL"
+elif [[ -f "$LOCAL_INSTALL_PATH" ]]; then
+  INSTALL_URL="file://${LOCAL_INSTALL_PATH}"
+else
+  INSTALL_URL="https://clawd.bot/install.sh"
+fi
 
 echo "==> Resolve npm versions"
 LATEST_VERSION="$(npm view clawdbot version)"
@@ -23,7 +30,7 @@ echo "==> Preinstall previous (forces installer upgrade path)"
 npm install -g "clawdbot@${PREVIOUS_VERSION}"
 
 echo "==> Run official installer one-liner"
-curl -fsSL "$INSTALL_URL" | bash --no-onboard
+curl -fsSL "$INSTALL_URL" | bash -s -- --no-onboard
 
 echo "==> Verify installed version"
 INSTALLED_VERSION="$(clawdbot --version 2>/dev/null | head -n 1 | tr -d '\r')"

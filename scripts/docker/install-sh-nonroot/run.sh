@@ -1,8 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_URL="${CLAWDBOT_INSTALL_URL:-https://clawd.bot/install.sh}"
-CLI_INSTALL_URL="${CLAWDBOT_INSTALL_CLI_URL:-https://clawd.bot/install-cli.sh}"
+LOCAL_INSTALL_PATH="/opt/clawdbot-install.sh"
+LOCAL_CLI_INSTALL_PATH="/opt/clawdbot-install-cli.sh"
+if [[ -n "${CLAWDBOT_INSTALL_URL:-}" ]]; then
+  INSTALL_URL="$CLAWDBOT_INSTALL_URL"
+elif [[ -f "$LOCAL_INSTALL_PATH" ]]; then
+  INSTALL_URL="file://${LOCAL_INSTALL_PATH}"
+else
+  INSTALL_URL="https://clawd.bot/install.sh"
+fi
+
+if [[ -n "${CLAWDBOT_INSTALL_CLI_URL:-}" ]]; then
+  CLI_INSTALL_URL="$CLAWDBOT_INSTALL_CLI_URL"
+elif [[ -f "$LOCAL_CLI_INSTALL_PATH" ]]; then
+  CLI_INSTALL_URL="file://${LOCAL_CLI_INSTALL_PATH}"
+else
+  CLI_INSTALL_URL="https://clawd.bot/install-cli.sh"
+fi
 
 echo "==> Pre-flight: ensure git absent"
 if command -v git >/dev/null; then
@@ -11,7 +26,7 @@ if command -v git >/dev/null; then
 fi
 
 echo "==> Run installer (non-root user)"
-curl -fsSL "$INSTALL_URL" | bash --no-onboard
+curl -fsSL "$INSTALL_URL" | bash -s -- --no-onboard
 
 # Ensure PATH picks up user npm prefix
 export PATH="$HOME/.npm-global/bin:$PATH"

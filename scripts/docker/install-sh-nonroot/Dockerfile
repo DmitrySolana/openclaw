@@ -1,11 +1,12 @@
 FROM ubuntu:24.04
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
     curl \
     sudo \
+    tzdata \
   && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -s /bin/bash app \
@@ -17,7 +18,10 @@ WORKDIR /home/app
 ENV NPM_CONFIG_FUND=false
 ENV NPM_CONFIG_AUDIT=false
 
-COPY run.sh /usr/local/bin/clawdbot-install-nonroot
-RUN sudo chmod +x /usr/local/bin/clawdbot-install-nonroot
+COPY scripts/docker/install-sh-nonroot/run.sh /usr/local/bin/clawdbot-install-nonroot
+COPY public/install.sh /opt/clawdbot-install.sh
+COPY public/install-cli.sh /opt/clawdbot-install-cli.sh
+RUN sudo chmod +x /usr/local/bin/clawdbot-install-nonroot \
+  && sudo chmod a+r /opt/clawdbot-install.sh /opt/clawdbot-install-cli.sh
 
 ENTRYPOINT ["/usr/local/bin/clawdbot-install-nonroot"]
