@@ -145,6 +145,40 @@ INSTALL_METHOD=${CLAWDBOT_INSTALL_METHOD:-}
 GIT_DIR_DEFAULT="${HOME}/clawdbot"
 GIT_DIR=${CLAWDBOT_GIT_DIR:-$GIT_DIR_DEFAULT}
 GIT_UPDATE=${CLAWDBOT_GIT_UPDATE:-1}
+HELP=0
+
+print_usage() {
+    cat <<EOF
+Clawdbot installer (macOS + Linux)
+
+Usage:
+  curl -fsSL https://clawd.bot/install.sh | bash -s -- [options]
+
+Options:
+  --install-method, --method npm|git   Install via npm (default) or from a git checkout
+  --npm                               Shortcut for --install-method npm
+  --git, --github                     Shortcut for --install-method git
+  --git-dir, --dir <path>             Checkout directory (default: ~/clawdbot)
+  --no-git-update                      Skip git pull for existing checkout
+  --no-onboard                          Skip onboarding (non-interactive)
+  --no-prompt                           Disable prompts (required in CI/automation)
+  --dry-run                             Print what would happen (no changes)
+  --help, -h                            Show this help
+
+Environment variables:
+  CLAWDBOT_INSTALL_METHOD=git|npm
+  CLAWDBOT_GIT_DIR=...
+  CLAWDBOT_GIT_UPDATE=0|1
+  CLAWDBOT_NO_PROMPT=1
+  CLAWDBOT_DRY_RUN=1
+  CLAWDBOT_NO_ONBOARD=1
+
+Examples:
+  curl -fsSL https://clawd.bot/install.sh | bash
+  curl -fsSL https://clawd.bot/install.sh | bash -s -- --no-onboard
+  curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git --no-onboard
+EOF
+}
 
 parse_args() {
     while [[ $# -gt 0 ]]; do
@@ -163,6 +197,10 @@ parse_args() {
                 ;;
             --no-prompt)
                 NO_PROMPT=1
+                shift
+                ;;
+            --help|-h)
+                HELP=1
                 shift
                 ;;
             --install-method|--method)
@@ -492,6 +530,11 @@ resolve_clawdbot_version() {
 
 # Main installation flow
 main() {
+    if [[ "$HELP" == "1" ]]; then
+        print_usage
+        return 0
+    fi
+
     local detected_checkout=""
     detected_checkout="$(detect_clawdbot_checkout "$PWD" || true)"
 
@@ -593,6 +636,8 @@ EOF
     if [[ "$INSTALL_METHOD" == "git" ]]; then
         echo -e "Installed from source. To update later, run: ${INFO}clawdbot update --restart${NC}"
         echo -e "Switch to global install later: ${INFO}curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method npm${NC}"
+    elif [[ "$INSTALL_METHOD" == "npm" ]]; then
+        echo -e "Source install (GitHub checkout): ${INFO}curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git --no-onboard${NC}"
     elif [[ "$is_upgrade" == "true" ]]; then
         echo -e "Upgrade complete. Run ${INFO}clawdbot doctor${NC} to check for additional migrations."
     else
