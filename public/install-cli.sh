@@ -2,11 +2,11 @@
 set -euo pipefail
 
 # Clawdbot CLI installer (non-interactive, no onboarding)
-# Usage: curl -fsSL https://clawd.bot/install-cli.sh | bash -s -- [--json] [--prefix <path>] [--version <ver>] [--node-version <ver>] [--onboard]
+# Usage: curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install-cli.sh | bash -s -- [--json] [--prefix <path>] [--version <ver>] [--node-version <ver>] [--onboard]
 
 PREFIX="${CLAWDBOT_PREFIX:-${HOME}/.clawdbot}"
 CLAWDBOT_VERSION="${CLAWDBOT_VERSION:-latest}"
-NODE_VERSION="${CLAWDBOT_NODE_VERSION:-22.12.0}"
+NODE_VERSION="${CLAWDBOT_NODE_VERSION:-22.22.0}"
 SHARP_IGNORE_GLOBAL_LIBVIPS="${SHARP_IGNORE_GLOBAL_LIBVIPS:-1}"
 JSON=0
 RUN_ONBOARD=0
@@ -18,7 +18,7 @@ Usage: install-cli.sh [options]
   --json                Emit NDJSON events (no human output)
   --prefix <path>        Install prefix (default: ~/.clawdbot)
   --version <ver>        Clawdbot version (default: latest)
-  --node-version <ver>   Node version (default: 22.12.0)
+  --node-version <ver>   Node version (default: 22.22.0)
   --onboard              Run "clawdbot onboard" after install
   --no-onboard           Skip onboarding (default)
   --set-npm-prefix       Force npm prefix to ~/.npm-global if current prefix is not writable (Linux)
@@ -32,6 +32,27 @@ log() {
   if [[ "$JSON" -eq 0 ]]; then
     echo "$@"
   fi
+}
+
+curl_secure() {
+  curl -fsSL --proto '=https' --tlsv1.2 "$@"
+}
+
+sha256_file() {
+  local file="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+    return 0
+  fi
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$file" | awk '{print $1}'
+    return 0
+  fi
+  if command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$file" | awk '{print $NF}'
+    return 0
+  fi
+  fail "Missing sha256 tool (need sha256sum, shasum, or openssl)"
 }
 
 emit_json() {
@@ -200,6 +221,10 @@ install_node() {
   local tmp
   local dir
   local current_major
+  local base_url
+  local tarball
+  local expected_sha
+  local actual_sha
 
   os="$(os_detect)"
   arch="$(arch_detect)"
@@ -218,18 +243,35 @@ install_node() {
 
   mkdir -p "${PREFIX}/tools"
   tmp="$(mktemp -d)"
-  url="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-${os}-${arch}.tar.gz"
+  base_url="https://nodejs.org/dist/v${NODE_VERSION}"
+  tarball="node-v${NODE_VERSION}-${os}-${arch}.tar.gz"
+  url="${base_url}/${tarball}"
 
   require_bin curl
   require_bin tar
 
-  curl -fsSL "$url" -o "$tmp/node.tgz"
+  curl_secure "${base_url}/SHASUMS256.txt" -o "$tmp/SHASUMS256.txt"
+  expected_sha="$(grep "  ${tarball}$" "$tmp/SHASUMS256.txt" | awk '{print $1}' | head -n 1 || true)"
+  if [[ -z "${expected_sha}" ]]; then
+    fail "Failed to resolve Node shasum for ${tarball}"
+  fi
+
+  curl_secure "$url" -o "$tmp/node.tgz"
+  actual_sha="$(sha256_file "$tmp/node.tgz")"
+  if [[ "$actual_sha" != "$expected_sha" ]]; then
+    fail "Node tarball sha256 mismatch for ${tarball} (expected ${expected_sha}, got ${actual_sha})"
+  fi
+
   rm -rf "$dir"
   mkdir -p "$dir"
   tar -xzf "$tmp/node.tgz" -C "$dir" --strip-components=1
   rm -rf "$tmp"
 
   ln -sfn "$dir" "${PREFIX}/tools/node"
+
+  if ! "$(node_bin)" -e "require('node:sqlite')" >/dev/null 2>&1; then
+    fail "Installed Node ${NODE_VERSION} is missing node:sqlite; re-run with --node-version 22.22.0 (or newer)"
+  fi
   emit_json "{\"event\":\"step\",\"name\":\"node\",\"status\":\"ok\",\"version\":\"${NODE_VERSION}\"}"
 }
 

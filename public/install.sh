@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Clawdbot Installer for macOS and Linux
-# Usage: curl -fsSL https://clawd.bot/install.sh | bash
+# Usage: curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash
 
 BOLD='\033[1m'
 ACCENT='\033[38;2;255;90;45m'
@@ -17,6 +17,34 @@ MUTED='\033[38;2;139;127;119m'
 NC='\033[0m' # No Color
 
 DEFAULT_TAGLINE="All your chats, one Clawdbot."
+
+TMPFILES=()
+cleanup_tmpfiles() {
+    local f
+    for f in "${TMPFILES[@]:-}"; do
+        rm -f "$f" 2>/dev/null || true
+    done
+}
+trap cleanup_tmpfiles EXIT
+
+mktempfile() {
+    local f
+    f="$(mktemp)"
+    TMPFILES+=("$f")
+    echo "$f"
+}
+
+curl_secure() {
+    curl -fsSL --proto '=https' --tlsv1.2 "$@"
+}
+
+run_remote_bash() {
+    local url="$1"
+    local tmp
+    tmp="$(mktempfile)"
+    curl_secure "$url" -o "$tmp"
+    /bin/bash "$tmp"
+}
 
 TAGLINES=()
 TAGLINES+=("Your terminal just grew claws—type something and let the bot pinch the busywork.")
@@ -81,7 +109,7 @@ TAGLINES+=("Siri's competent cousin.")
 TAGLINES+=("Works on Android. Crazy concept, we know.")
 TAGLINES+=("No \$999 stand required.")
 TAGLINES+=("We ship features faster than Apple ships calculator updates.")
-TAGLINES+=("Your AI assistant, now without the \\$3,499 headset.")
+TAGLINES+=("Your AI assistant, now without the \$3,499 headset.")
 TAGLINES+=("Think different. Actually think.")
 TAGLINES+=("Ah, the fruit tree company! 🍎")
 
@@ -155,7 +183,7 @@ print_usage() {
 Clawdbot installer (macOS + Linux)
 
 Usage:
-  curl -fsSL https://clawd.bot/install.sh | bash -s -- [options]
+  curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- [options]
 
 Options:
   --install-method, --method npm|git   Install via npm (default) or from a git checkout
@@ -180,9 +208,9 @@ Environment variables:
   SHARP_IGNORE_GLOBAL_LIBVIPS=0|1    Default: 1 (avoid sharp building against global libvips)
 
 Examples:
-  curl -fsSL https://clawd.bot/install.sh | bash
-  curl -fsSL https://clawd.bot/install.sh | bash -s -- --no-onboard
-  curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git --no-onboard
+  curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash
+  curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --no-onboard
+  curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --install-method git --no-onboard
 EOF
 }
 
@@ -285,7 +313,7 @@ echo ""
 OS="unknown"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     OS="macos"
-elif [[ "$OSTYPE" == "linux-gnu"* ]] || [[ -n "$WSL_DISTRO_NAME" ]]; then
+elif [[ "$OSTYPE" == "linux-gnu"* ]] || [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
     OS="linux"
 fi
 
@@ -303,7 +331,7 @@ install_homebrew() {
     if [[ "$OS" == "macos" ]]; then
         if ! command -v brew &> /dev/null; then
             echo -e "${WARN}→${NC} Installing Homebrew..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            run_remote_bash "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 
             # Add Homebrew to PATH for this session
             if [[ -f "/opt/homebrew/bin/brew" ]]; then
@@ -342,21 +370,29 @@ install_node() {
         brew install node@22
         brew link node@22 --overwrite --force 2>/dev/null || true
         echo -e "${SUCCESS}✓${NC} Node.js installed"
-    elif [[ "$OS" == "linux" ]]; then
-        echo -e "${WARN}→${NC} Installing Node.js via NodeSource..."
-        # Using NodeSource for latest Node.js
-        if command -v apt-get &> /dev/null; then
-            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-        elif command -v dnf &> /dev/null; then
-            curl -fsSL https://rpm.nodesource.com/setup_22.x | sudo bash -
-            sudo dnf install -y nodejs
-        elif command -v yum &> /dev/null; then
-            curl -fsSL https://rpm.nodesource.com/setup_22.x | sudo bash -
-            sudo yum install -y nodejs
-        else
-            echo -e "${ERROR}Error: Could not detect package manager${NC}"
-            echo "Please install Node.js 22+ manually: https://nodejs.org"
+	    elif [[ "$OS" == "linux" ]]; then
+	        echo -e "${WARN}→${NC} Installing Node.js via NodeSource..."
+	        if command -v apt-get &> /dev/null; then
+	            local tmp
+	            tmp="$(mktempfile)"
+	            curl_secure "https://deb.nodesource.com/setup_22.x" -o "$tmp"
+	            sudo -E bash "$tmp"
+	            sudo apt-get install -y nodejs
+	        elif command -v dnf &> /dev/null; then
+	            local tmp
+	            tmp="$(mktempfile)"
+	            curl_secure "https://rpm.nodesource.com/setup_22.x" -o "$tmp"
+	            sudo bash "$tmp"
+	            sudo dnf install -y nodejs
+	        elif command -v yum &> /dev/null; then
+	            local tmp
+	            tmp="$(mktempfile)"
+	            curl_secure "https://rpm.nodesource.com/setup_22.x" -o "$tmp"
+	            sudo bash "$tmp"
+	            sudo yum install -y nodejs
+	        else
+	            echo -e "${ERROR}Error: Could not detect package manager${NC}"
+	            echo "Please install Node.js 22+ manually: https://nodejs.org"
             exit 1
         fi
         echo -e "${SUCCESS}✓${NC} Node.js installed"
@@ -706,7 +742,7 @@ EOF
 
     if [[ "$INSTALL_METHOD" == "git" ]]; then
         echo -e "Installed from source. To update later, run: ${INFO}clawdbot update --restart${NC}"
-        echo -e "Switch to global install later: ${INFO}curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method npm${NC}"
+        echo -e "Switch to global install later: ${INFO}curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --install-method npm${NC}"
     elif [[ "$is_upgrade" == "true" ]]; then
         echo -e "Upgrade complete. Run ${INFO}clawdbot doctor${NC} to check for additional migrations."
     else

@@ -34,15 +34,23 @@ NODE
 
 echo "latest=$LATEST_VERSION next=$NEXT_VERSION previous=$PREVIOUS_VERSION"
 
+curl_install() {
+  if [[ "$INSTALL_URL" == file://* ]]; then
+    curl -fsSL "$INSTALL_URL"
+  else
+    curl -fsSL --proto '=https' --tlsv1.2 "$INSTALL_URL"
+  fi
+}
+
 echo "==> Installer: --help"
-curl -fsSL "$INSTALL_URL" | bash -s -- --help >/tmp/install-help.txt
+curl_install | bash -s -- --help >/tmp/install-help.txt
 grep -q -- "--install-method" /tmp/install-help.txt
 
 echo "==> Preinstall previous (forces installer upgrade path)"
 npm install -g "clawdbot@${PREVIOUS_VERSION}"
 
 echo "==> Run official installer one-liner"
-curl -fsSL "$INSTALL_URL" | bash -s -- --no-onboard
+curl_install | bash -s -- --no-onboard
 
 echo "==> Verify installed version"
 INSTALLED_VERSION="$(clawdbot --version 2>/dev/null | head -n 1 | tr -d '\r')"
@@ -68,7 +76,7 @@ touch "$TMP_REPO/pnpm-workspace.yaml"
 (
   cd "$TMP_REPO"
   set +e
-  curl -fsSL "$INSTALL_URL" | bash -s -- --dry-run --no-onboard --no-prompt >/tmp/repo-detect.out 2>&1
+  curl_install | bash -s -- --dry-run --no-onboard --no-prompt >/tmp/repo-detect.out 2>&1
   code=$?
   set -e
   if [[ "$code" -eq 0 ]]; then
@@ -79,7 +87,7 @@ touch "$TMP_REPO/pnpm-workspace.yaml"
 )
 
 echo "==> Installer: dry-run (explicit methods)"
-curl -fsSL "$INSTALL_URL" | bash -s -- --dry-run --no-onboard --install-method npm --no-prompt >/dev/null
-curl -fsSL "$INSTALL_URL" | bash -s -- --dry-run --no-onboard --install-method git --git-dir /tmp/clawdbot-src --no-prompt >/dev/null
+curl_install | bash -s -- --dry-run --no-onboard --install-method npm --no-prompt >/dev/null
+curl_install | bash -s -- --dry-run --no-onboard --install-method git --git-dir /tmp/clawdbot-src --no-prompt >/dev/null
 
 echo "OK"

@@ -10,8 +10,16 @@ else
   INSTALL_URL="https://clawd.bot/install.sh"
 fi
 
+curl_install() {
+  if [[ "$INSTALL_URL" == file://* ]]; then
+    curl -fsSL "$INSTALL_URL"
+  else
+    curl -fsSL --proto '=https' --tlsv1.2 "$INSTALL_URL"
+  fi
+}
+
 echo "==> Installer: --help"
-curl -fsSL "$INSTALL_URL" | bash -s -- --help >/tmp/install-help.txt
+curl_install | bash -s -- --help >/tmp/install-help.txt
 grep -q -- "--install-method" /tmp/install-help.txt
 
 echo "==> Clone Clawdbot repo"
@@ -23,7 +31,7 @@ echo "==> Verify autodetect fails without explicit method (no TTY)"
 (
   cd "$REPO_DIR"
   set +e
-  curl -fsSL "$INSTALL_URL" | bash -s -- --dry-run --no-onboard --no-prompt >/tmp/git-detect.out 2>&1
+  curl_install | bash -s -- --dry-run --no-onboard --no-prompt >/tmp/git-detect.out 2>&1
   code=$?
   set -e
   if [[ "$code" -eq 0 ]]; then
@@ -36,7 +44,7 @@ echo "==> Verify autodetect fails without explicit method (no TTY)"
 echo "==> Install from Git (using detected checkout)"
 (
   cd "$REPO_DIR"
-  curl -fsSL "$INSTALL_URL" | bash -s -- --install-method git --no-onboard --no-prompt --no-git-update
+  curl_install | bash -s -- --install-method git --no-onboard --no-prompt --no-git-update
 )
 
 echo "==> Verify wrapper exists"

@@ -19,12 +19,28 @@ else
   CLI_INSTALL_URL="https://clawd.bot/install-cli.sh"
 fi
 
+curl_install() {
+  if [[ "$INSTALL_URL" == file://* ]]; then
+    curl -fsSL "$INSTALL_URL"
+  else
+    curl -fsSL --proto '=https' --tlsv1.2 "$INSTALL_URL"
+  fi
+}
+
+curl_cli_install() {
+  if [[ "$CLI_INSTALL_URL" == file://* ]]; then
+    curl -fsSL "$CLI_INSTALL_URL"
+  else
+    curl -fsSL --proto '=https' --tlsv1.2 "$CLI_INSTALL_URL"
+  fi
+}
+
 echo "==> Installer: --help"
-curl -fsSL "$INSTALL_URL" | bash -s -- --help >/tmp/install-help.txt
+curl_install | bash -s -- --help >/tmp/install-help.txt
 grep -q -- "--install-method" /tmp/install-help.txt
 
 echo "==> CLI installer: --help"
-curl -fsSL "$CLI_INSTALL_URL" | bash -s -- --help >/tmp/install-cli-help.txt
+curl_cli_install | bash -s -- --help >/tmp/install-cli-help.txt
 grep -q -- "--prefix" /tmp/install-cli-help.txt
 
 echo "==> Pre-flight: ensure git absent"
@@ -34,7 +50,7 @@ if command -v git >/dev/null; then
 fi
 
 echo "==> Run installer (non-root user)"
-curl -fsSL "$INSTALL_URL" | bash -s -- --no-onboard
+curl_install | bash -s -- --no-onboard
 
 # Ensure PATH picks up user npm prefix
 export PATH="$HOME/.npm-global/bin:$PATH"
@@ -65,6 +81,6 @@ echo "==> Sanity: CLI runs"
 "$CMD_PATH" --help >/dev/null
 
 echo "==> Run CLI installer (should also succeed non-root)"
-curl -fsSL "$CLI_INSTALL_URL" | bash -s -- --set-npm-prefix --no-onboard
+curl_cli_install | bash -s -- --set-npm-prefix --no-onboard
 
 echo "OK"

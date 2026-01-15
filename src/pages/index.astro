@@ -173,7 +173,7 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
           <div class="code-line comment"># Works everywhere. Installs everything. You're welcome. 🦞</div>
           <div class="code-line cmd">
             <span class="code-prompt">$</span>
-            <span class="os-cmd">curl -fsSL https://clawd.bot/install.sh | bash</span>
+            <span class="os-cmd">curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash</span>
             <button class="copy-line-btn" data-cmd="oneliner" title="Copy">
               <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
@@ -205,7 +205,7 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
             <div class="code-line comment"># For those who read source code for fun</div>
             <div class="code-line cmd">
               <span class="code-prompt">$</span>
-              <span class="os-cmd-hackable">curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git</span>
+              <span class="os-cmd-hackable">curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --install-method git</span>
               <button class="copy-line-btn" data-cmd="hackable-installer" title="Copy">
                 <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
@@ -271,7 +271,7 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
       };
 
       const osCmds = {
-        unix: 'curl -fsSL https://clawd.bot/install.sh | bash',
+        unix: "curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash",
         windows: 'iwr -useb https://clawd.bot/install.ps1 | iex'
       };
 
@@ -316,7 +316,7 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
         document.querySelectorAll('.os-cmd').forEach(cmd => cmd.textContent = osCmds[currentOs]);
         // Update hackable OS command for installer mode
         const hackableOsCmd = currentOs === 'unix'
-          ? 'curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git'
+          ? "curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --install-method git"
           : 'iwr -useb https://clawd.bot/install.ps1 | iex -args "--install-method git"';
         document.querySelectorAll('.os-cmd-hackable').forEach(cmd => cmd.textContent = hackableOsCmd);
         // Update OS indicator text
@@ -398,12 +398,12 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
       // Copy button functionality
       const copyCommands = {
         'oneliner': () => currentOs === 'unix'
-          ? 'curl -fsSL https://clawd.bot/install.sh | bash'
+          ? "curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash"
           : 'iwr -useb https://clawd.bot/install.ps1 | iex',
         'install': () => currentPm === 'npm' ? 'npm i -g clawdbot' : 'pnpm add -g clawdbot',
         'onboard': () => 'clawdbot onboard',
         'hackable-installer': () => currentOs === 'unix'
-          ? 'curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git'
+          ? "curl -fsSL --proto '=https' --tlsv1.2 https://clawd.bot/install.sh | bash -s -- --install-method git"
           : 'iwr -useb https://clawd.bot/install.ps1 | iex -args "--install-method git"',
         'clone': () => 'git clone https://github.com/clawdbot/clawdbot.git',
         'build': () => 'cd clawdbot && pnpm install && pnpm run build',
