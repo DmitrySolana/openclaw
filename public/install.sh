@@ -1111,8 +1111,12 @@ EOF
                 warn_clawdbot_not_found
                 return 0
             fi
+            local doctor_args=()
+            if [[ "$NO_ONBOARD" == "1" ]]; then
+                doctor_args+=("--non-interactive")
+            fi
             echo -e "Running ${INFO}clawdbot doctor${NC}..."
-            if CLAWDBOT_UPDATE_IN_PROGRESS=1 "$claw" doctor </dev/tty; then
+            if CLAWDBOT_UPDATE_IN_PROGRESS=1 "$claw" doctor "${doctor_args[@]}" </dev/tty; then
                 echo -e "Updating plugins (${INFO}clawdbot plugins update --all${NC})..."
                 CLAWDBOT_UPDATE_IN_PROGRESS=1 "$claw" plugins update --all || true
             else
