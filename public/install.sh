@@ -527,20 +527,20 @@ install_node() {
 	            local tmp
 	            tmp="$(mktempfile)"
 	            download_file "https://deb.nodesource.com/setup_22.x" "$tmp"
-	            sudo -E bash "$tmp"
-	            sudo apt-get install -y nodejs
+	            maybe_sudo -E bash "$tmp"
+	            maybe_sudo apt-get install -y nodejs
 	        elif command -v dnf &> /dev/null; then
 	            local tmp
 	            tmp="$(mktempfile)"
 	            download_file "https://rpm.nodesource.com/setup_22.x" "$tmp"
-	            sudo bash "$tmp"
-	            sudo dnf install -y nodejs
+	            maybe_sudo bash "$tmp"
+	            maybe_sudo dnf install -y nodejs
 	        elif command -v yum &> /dev/null; then
 	            local tmp
 	            tmp="$(mktempfile)"
 	            download_file "https://rpm.nodesource.com/setup_22.x" "$tmp"
-	            sudo bash "$tmp"
-	            sudo yum install -y nodejs
+	            maybe_sudo bash "$tmp"
+	            maybe_sudo yum install -y nodejs
 	        else
 	            echo -e "${ERROR}Error: Could not detect package manager${NC}"
 	            echo "Please install Node.js 22+ manually: https://nodejs.org"
@@ -562,6 +562,19 @@ check_git() {
 
 is_root() {
     [[ "$(id -u)" -eq 0 ]]
+}
+
+# Run a command with sudo only if not already root
+maybe_sudo() {
+    if is_root; then
+        # Skip -E flag when root (env is already preserved)
+        if [[ "${1:-}" == "-E" ]]; then
+            shift
+        fi
+        "$@"
+    else
+        sudo "$@"
+    fi
 }
 
 require_sudo() {
@@ -586,12 +599,12 @@ install_git() {
     elif [[ "$OS" == "linux" ]]; then
         require_sudo
         if command -v apt-get &> /dev/null; then
-            sudo apt-get update -y
-            sudo apt-get install -y git
+            maybe_sudo apt-get update -y
+            maybe_sudo apt-get install -y git
         elif command -v dnf &> /dev/null; then
-            sudo dnf install -y git
+            maybe_sudo dnf install -y git
         elif command -v yum &> /dev/null; then
-            sudo yum install -y git
+            maybe_sudo yum install -y git
         else
             echo -e "${ERROR}Error: Could not detect package manager for Git${NC}"
             exit 1
