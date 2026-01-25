@@ -153,6 +153,41 @@ function Require-Git {
     exit 1
 }
 
+function Ensure-ClawdbotOnPath {
+    if (Get-Command clawdbot -ErrorAction SilentlyContinue) {
+        return $true
+    }
+
+    $npmPrefix = $null
+    try {
+        $npmPrefix = (npm config get prefix 2>$null).Trim()
+    } catch {
+        $npmPrefix = $null
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($npmPrefix)) {
+        $npmBin = Join-Path $npmPrefix "bin"
+        $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+        if (-not ($userPath -split ";" | Where-Object { $_ -ieq $npmBin })) {
+            [Environment]::SetEnvironmentVariable("Path", "$userPath;$npmBin", "User")
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+            Write-Host "[!] Added $npmBin to user PATH (restart terminal if command not found)" -ForegroundColor Yellow
+        }
+        if (Test-Path (Join-Path $npmBin "clawdbot.cmd")) {
+            return $true
+        }
+    }
+
+    Write-Host "[!] clawdbot is not on PATH yet." -ForegroundColor Yellow
+    Write-Host "Restart PowerShell or add the npm global bin folder to PATH." -ForegroundColor Yellow
+    if ($npmPrefix) {
+        Write-Host "Expected path: $npmPrefix\\bin" -ForegroundColor Cyan
+    } else {
+        Write-Host "Hint: run \"npm config get prefix\" to find your npm global path." -ForegroundColor Gray
+    }
+    return $false
+}
+
 function Ensure-Pnpm {
     if (Get-Command pnpm -ErrorAction SilentlyContinue) {
         return
@@ -189,7 +224,20 @@ function Install-Clawdbot {
     $env:NPM_CONFIG_FUND = "false"
     $env:NPM_CONFIG_AUDIT = "false"
     try {
-        npm install -g "clawdbot@$Tag"
+        $npmOutput = npm install -g "clawdbot@$Tag" 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[!] npm install failed" -ForegroundColor Red
+            if ($npmOutput -match "spawn git" -or $npmOutput -match "ENOENT.*git") {
+                Write-Host "Error: git is missing from PATH." -ForegroundColor Red
+                Write-Host "Install Git for Windows, then reopen PowerShell and retry:" -ForegroundColor Yellow
+                Write-Host "  https://git-scm.com/download/win" -ForegroundColor Cyan
+            } else {
+                Write-Host "Re-run with verbose output to see the full error:" -ForegroundColor Yellow
+                Write-Host "  iwr -useb https://clawd.bot/install.ps1 | iex" -ForegroundColor Cyan
+            }
+            $npmOutput | ForEach-Object { Write-Host $_ }
+            exit 1
+        }
     } finally {
         $env:NPM_CONFIG_LOGLEVEL = $prevLogLevel
         $env:NPM_CONFIG_UPDATE_NOTIFIER = $prevUpdateNotifier
@@ -335,6 +383,12 @@ function Main {
         Install-ClawdbotFromGit -RepoDir $GitDir -SkipUpdate:$NoGitUpdate
     } else {
         Install-Clawdbot
+    }
+
+    if (-not (Ensure-ClawdbotOnPath)) {
+        Write-Host "Install completed, but Clawdbot is not on PATH yet." -ForegroundColor Yellow
+        Write-Host "Open a new terminal, then run: clawdbot doctor" -ForegroundColor Cyan
+        return
     }
 
     # Step 3: Run doctor for migrations if upgrading or git install
