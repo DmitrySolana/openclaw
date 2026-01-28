@@ -1,4 +1,6 @@
-# clawd.bot
+# Molt.bot
+
+Formerly known as clawd.bot
 
 Landing page for [Moltbot](https://github.com/moltbot/moltbot) — your personal AI assistant.
 
