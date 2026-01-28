@@ -96,12 +96,14 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
         <h2 class="section-title">
           <span class="claw-accent">⟩</span> What People Say
         </h2>
-        <a href="/shoutouts" class="section-link">View all →</a>
+        <a href="/shoutouts" class="section-link">View all <span class="sr-only">community shoutouts</span>
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
-      <div class="testimonials-track">
+      <div class="testimonials-track" inert>
         <div class="testimonials-row row-1" style={`--duration: ${duration1}s`}>
           {row1.map((t) => (
-            <a href={t.url} target="_blank" rel="noopener" class="testimonial-card">
+            <a href={t.url} target="_blank" rel="noopener" class="testimonial-card" tabindex="-1">
               <img
                 src={`https://unavatar.io/x/${t.author}`}
                 alt={t.author}
@@ -1765,6 +1767,10 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
     );
   }
 
+  .testimonials-track:focus-within .testimonials-row {
+    animation-play-state: paused;
+  }
+
   .testimonials-row {
     display: flex;
     gap: 16px;
@@ -1956,6 +1962,38 @@ const duration2 = (row2.length / 2 * pixelsPerItem) / pixelsPerSecond;
     .macos-download-btn {
       padding: 12px 20px;
       font-size: 0.9rem;
+    }
+  }
+
+  /* Accessibility Utilities */
+
+  /* Hides content visually but keeps it available for screen readers */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Global Focus State: Replaces the default browser ring with your theme colors */
+  :focus-visible {
+    outline: 3px solid var(--cyan-bright);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* Respect user's system settings for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 </style>
