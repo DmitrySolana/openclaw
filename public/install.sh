@@ -105,7 +105,7 @@ extract_clawdbot_conflict_path() {
 
 cleanup_clawdbot_bin_conflict() {
     local bin_path="$1"
-    if [[ -z "$bin_path" || ! -e "$bin_path" ]]; then
+    if [[ -z "$bin_path" || ( ! -e "$bin_path" && ! -L "$bin_path" ) ]]; then
         return 1
     fi
     local npm_bin=""
