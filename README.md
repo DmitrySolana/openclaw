@@ -1,8 +1,8 @@
-# clawd.bot
+# openclaw
 
-Landing page for [Moltbot](https://github.com/moltbot/moltbot) — your personal AI assistant.
+Landing page for [openclaw](https://github.com/moltbot/moltbot) — your personal AI assistant.
 
-**Live**: [clawd.bot](https://clawd.bot)
+**Live**: openclaw(https://clawd.bot)
 
 ## Pages
 
